@@ -50,13 +50,12 @@ func GetNodes(rd io.Reader, getAll bool, tags ...string) ([]*Node, error) {
 			return allNodes, nil
 		case html.TextToken:
 			// if we want all occurence or just root level
-			if getAll || depth == 1 {
+			if (getAll || depth == 1) && inTagWeWant[current] {
 				// if in a tag we want just write content
-				if inTagWeWant[current] {
-					if _, err := nd.Data.Write(rw); err != nil {
-						return allNodes, err
-					}
+				if _, err := nd.Data.Write(rw); err != nil {
+					return allNodes, err
 				}
+
 			}
 		case html.StartTagToken:
 			tagn, has := tkr.TagName()
