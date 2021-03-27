@@ -101,7 +101,7 @@ func GetNodes(rd io.Reader, getAll bool, tags ...string) ([]*Node, error) {
 }
 
 // Just the content and offsets
-func JustOneContent(rd io.Reader, tag []byte) (string, int, int, error) {
+func JustOneContent(rd io.Reader, tag []byte) (bytes.Buffer, int, int, error) {
 
 	// offset to replace in file i.e someBytes[startOffest:endOffest+1]
 	startOffest := 0
@@ -109,7 +109,7 @@ func JustOneContent(rd io.Reader, tag []byte) (string, int, int, error) {
 	depth := 0
 	tkr := html.NewTokenizer(rd)
 	var data bytes.Buffer
-	// track when we have a script
+	// track when we are in tag we want
 	var inTag = false
 	for {
 		tt := tkr.Next()
@@ -120,12 +120,15 @@ func JustOneContent(rd io.Reader, tag []byte) (string, int, int, error) {
 		switch tt {
 		case html.ErrorToken:
 			// EOF normally...
-			return data.String(), startOffest, offset, tkr.Err()
+			if err := tkr.Err(); err != nil && err != io.EOF {
+				return data, startOffest, offset, err
+			}
+			return data, startOffest, offset, tkr.Err()
 		case html.TextToken:
 			// if in a script just write content
 			if inTag && depth == 1 {
 				if _, err := data.Write(rw); err != nil {
-					return data.String(), startOffest, offset, err
+					return data, startOffest, offset, err
 				}
 			}
 		case html.StartTagToken:
@@ -136,7 +139,7 @@ func JustOneContent(rd io.Reader, tag []byte) (string, int, int, error) {
 				inTag = true
 				startOffest -= len(rw)
 				if _, err := data.Write(rw); err != nil {
-					return data.String(), startOffest, offset, err
+					return data, startOffest, offset, err
 				}
 			}
 		case html.EndTagToken:
@@ -146,9 +149,9 @@ func JustOneContent(rd io.Reader, tag []byte) (string, int, int, error) {
 				// end tag for script so bail
 				if depth == 0 && bytes.Equal(tagn, tag) {
 					if _, err := data.Write(rw); err != nil {
-						return data.String(), startOffest, offset, err
+						return data, startOffest, offset, err
 					}
-					return data.String(), startOffest, offset, nil
+					return data, startOffest, offset, nil
 
 				}
 
