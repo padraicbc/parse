@@ -1,3 +1,5 @@
+github.com/antlr/antlr4 v0.0.0-20210319025552-3590d4d5e18c h1:qGOWI+NNhKcTXy3JuHGXgCOfcz77a1zVeW4ChjluDCA=
+github.com/antlr/antlr4 v0.0.0-20210319025552-3590d4d5e18c/go.mod h1:T7PbCXFs94rrTttyxjbyT5+/1V8T2TYDejxUfHJjw1Y=
 golang.org/x/net v0.0.0-20210326060303-6b1517762897 h1:KrsHThm5nFk34YtATK1LsThyGhGbGe1olrte/HInHvs=
 golang.org/x/net v0.0.0-20210326060303-6b1517762897/go.mod h1:uSPa2vr4CLtc/ILN5odXGNXS6mhrKVzTaCXzk9m6W3k=
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
